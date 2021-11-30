@@ -9,6 +9,14 @@ var url = require ('url');
 var StringDecoder = require('string_decoder').StringDecoder;
 var config = require ('./config');
 var fs = require ('fs');
+var _data = require('./lib/data');
+var handlers = require ('.lib/handlers');
+var helpers = require ('./lib/helpers');
+
+_data.delete('test', 'newfile', function(err){
+    console.log('Error:', err);
+})
+
 // HTTP Server
 var server = http.createServer(function (req, res) {
  unifiedServer(req, res);
@@ -33,27 +41,13 @@ httpsServer.listen(config.httspport, function(){
 });
 */
 
-// define handlers
-var handlers = {};
 
-handlers.ping = function(data, callback)
-{
-    callback(200);
-} ;
-
-handlers.sample = function(data, callback){
-    // callback http status code and a payload (object)
-    callback(406, {'name' : 'sample.handler'})
-};
-
-handlers.notfound = function (data, callback) {
-    callback (404);
-};
 
 //define handlers request route
 var router = {
     'sample' : handlers.sample,
-    'ping' : handlers.ping
+    'ping' : handlers.ping,
+    'users' : handlers.users
 };
 
 // refactor : unify logic for creating HTTP and HTTPS servers
@@ -94,7 +88,7 @@ var unifiedServer = function(req, res)
            'queryStringObject' : queryStringObject,
            'method' : method,
            'headers' : headers,
-           'payload' : buffer
+           'payload' : helpers.parseJsonToObject(buffer)
        };
 
        //route request

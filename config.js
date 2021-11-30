@@ -9,13 +9,15 @@ var environments = {};
 environments.staging={
     'httpport' : 3000,
     'httpsport' : 3001,
-    'envName' : 'staging'
+    'envName' : 'staging',
+    'hashingSecret' : 'mysecret'
 };
 
 environments.production={
     'httpport' : 5000,
     'httpsport' : 5001,
-    'envName' : 'production'
+    'envName' : 'production',
+    'hashingSecret' : 'anothersecret'
 };
 
 // export the appropriate one
