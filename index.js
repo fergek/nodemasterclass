@@ -10,12 +10,9 @@ var StringDecoder = require('string_decoder').StringDecoder;
 var config = require ('./config');
 var fs = require ('fs');
 var _data = require('./lib/data');
-var handlers = require ('.lib/handlers');
+var handlers = require ('./lib/handlers');
 var helpers = require ('./lib/helpers');
 
-_data.delete('test', 'newfile', function(err){
-    console.log('Error:', err);
-})
 
 // HTTP Server
 var server = http.createServer(function (req, res) {
@@ -45,7 +42,6 @@ httpsServer.listen(config.httspport, function(){
 
 //define handlers request route
 var router = {
-    'sample' : handlers.sample,
     'ping' : handlers.ping,
     'users' : handlers.users
 };
@@ -53,7 +49,6 @@ var router = {
 // refactor : unify logic for creating HTTP and HTTPS servers
 var unifiedServer = function(req, res)
 {
-    process.env.NODE_TLS_REJECT_UNAUTHORIZED='0';
    // Get URL and parse it
    var parsedUrl = url.parse(req.url, true);
 
@@ -75,13 +70,15 @@ var unifiedServer = function(req, res)
    var buffer = '';
    req.on('data', function(data){
        buffer += decoder.write(data);
-   })
+   });
+
    req.on('end', function(){
-       buffer += decoder.end;
+       buffer += decoder.end();
 
        // choose handler
        var chosenHandler = typeof(router[trimmedPath]) !== 'undefined' ? router[trimmedPath] : handlers.notfound;
        console.log(chosenHandler);
+
        //construct data object to send to handler
        var data = {
            'trimmedPath' : trimmedPath,
