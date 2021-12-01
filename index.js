@@ -43,7 +43,8 @@ httpsServer.listen(config.httspport, function(){
 //define handlers request route
 var router = {
     'ping' : handlers.ping,
-    'users' : handlers.users
+    'users' : handlers.users,
+    'tokens' : handlers.tokens
 };
 
 // refactor : unify logic for creating HTTP and HTTPS servers
@@ -100,7 +101,7 @@ var unifiedServer = function(req, res)
 
                //convert payload into sting
                var payloadString = JSON.stringify(payload);
-               res.setHeader('Content-Type', 'application/json');
+               //res.setHeader('Content-Type', 'application/json');
                //return the response
                res.writeHead(statusCode);
                
